@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoVision AI - Intelligent Waste Detection & Segmentation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo-icon">🌿</span>
+            <span class="logo-text">EcoVision <span class="highlight">AI</span></span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#uploader">Analyze</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <span class="badge">Computer Vision & AI Project</span>
+            <h1>AI-Powered Waste Detection & Segmentation</h1>
+            <p>Detect, classify, and segment waste into 6 standardized categories using advanced computer vision pipelines.</p>
+            <div class="hero-actions">
+                <a href="#uploader" class="btn btn-primary">Analyze Waste Image</a>
+                <a href="#how-it-works" class="btn btn-outline">How It Works</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Workspace -->
+    <main class="container">
+        
+        <!-- Upload Card -->
+        <section id="uploader" class="card upload-card">
+            <div class="card-header">
+                <h2>Upload Waste Image</h2>
+                <p>Select or drag a waste image to analyze categories and segmentation masks.</p>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg" hidden>
+                
+                <div class="drop-zone-prompt" id="dropZonePrompt">
+                    <div class="upload-icon">📤</div>
+                    <h3>Drag & drop your waste image here</h3>
+                    <p>or <span class="browse-link">browse from your computer</span></p>
+                    <span class="supported-formats">Supported Formats: JPG, JPEG, PNG</span>
+                </div>
+
+                <!-- Image Preview Container -->
+                <div class="preview-container hidden" id="previewContainer">
+                    <img id="previewImage" src="" alt="Waste Image Preview">
+                </div>
+            </div>
+
+            <!-- File Metadata Bar -->
+            <div id="fileDetails" class="file-details hidden">
+                <div class="file-info">
+                    <span class="file-name" id="fileName">image.jpg</span>
+                    <span class="file-meta" id="fileDimensions">1920 × 1080 px</span>
+                </div>
+                <button id="removeBtn" class="btn-text">Remove Image</button>
+            </div>
+
+            <!-- Action Button -->
+            <button id="analyzeBtn" class="btn btn-primary btn-block" disabled>
+                <span class="btn-text-content">Analyze Waste</span>
+            </button>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loadingSpinner" class="loading-container hidden">
+            <div class="spinner"></div>
+            <h3>Analyzing Image...</h3>
+            <p>Running preprocessing, classification, and mask segmentation pipeline.</p>
+        </div>
+
+        <!-- Result Dashboard -->
+        <section id="resultSection" class="result-dashboard hidden">
+            <div class="dashboard-grid">
+                
+                <!-- Left Column: Input View -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Original Image</h3>
+                        <span class="sub-label">Input Source</span>
+                    </div>
+                    <div class="image-display-box">
+                        <img id="resultOriginalImg" src="" alt="Original Waste Input">
+                    </div>
+                </div>
+
+                <!-- Right Column: Computer Vision Output -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Analysis & Segmentation</h3>
+                        <span class="sub-label">Model Prediction</span>
+                    </div>
+
+                    <!-- Category Badge & Stats -->
+                    <div class="metrics-row">
+                        <div class="metric-card">
+                            <span class="metric-title">Detected Waste</span>
+                            <span id="detectedClass" class="metric-value class-badge">Plastic</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-title">Confidence</span>
+                            <span id="confidenceScore" class="metric-value">91.4%</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-title">Objects Found</span>
+                            <span id="objectsDetected" class="metric-value">1</span>
+                        </div>
+                    </div>
+
+                    <!-- Segmentation Viewer -->
+                    <div class="segmentation-viewer">
+                        <div class="viewer-header">
+                            <h4>Segmentation Mask</h4>
+                            <div class="tab-controls">
+                                <button class="tab-btn active" data-tab="overlay">Overlay</button>
+                                <button class="tab-btn" data-tab="mask">Binary Mask</button>
+                            </div>
+                        </div>
+                        <div class="image-display-box">
+                            <img id="resultSegmentationImg" src="" alt="Segmented Output">
+                        </div>
+                    </div>
+
+                    <!-- Disposal Recommendation Box -->
+                    <div class="disposal-card">
+                        <h4>♻️ Disposal Recommendation</h4>
+                        <p id="disposalRecommendation">Loading disposal guidelines...</p>
+                    </div>
+
+                    <!-- Action Controls -->
+                    <div class="action-row">
+                        <button id="resetBtn" class="btn btn-outline">Analyze Another Image</button>
+                        <a id="downloadBtn" download="waste_segmentation_result.png" class="btn btn-primary">Download Result</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section id="how-it-works" class="card section-spacing">
+            <div class="card-header center-text">
+                <h2>Computer Vision Pipeline</h2>
+                <p>How our model processes waste images step-by-step</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <h3>Upload</h3>
+                    <p>User selects or drops a JPG/PNG image into the interface.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <h3>Preprocess</h3>
+                    <p>Image is resized, mapped into RGB, and normalized for standard tensor sizing.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <h3>Detect & Segment</h3>
+                    <p>Contour detection and edge analysis isolate the waste region and create a binary mask.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">04</div>
+                    <h3>Classify & Advise</h3>
+                    <p>Features are mapped to TACO categories and disposal recommendations are generated.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="card section-spacing">
+            <div class="card-header">
+                <h2>About Project</h2>
+            </div>
+            <div class="about-content">
+                <p><strong>Project Name:</strong> Intelligent Waste Detection & Segmentation</p>
+                <p><strong>Problem Statement:</strong> Inefficient and manual waste sorting causes recycling contamination and slow processing speeds.</p>
+                <p><strong>Solution:</strong> Automated image classification and segmentation using Computer Vision algorithms based on the TACO dataset standard.</p>
+                <p><strong>6 Project Categories:</strong> Plastic, Metal, Glass, Paper/Cardboard, Food Waste, Foam.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
